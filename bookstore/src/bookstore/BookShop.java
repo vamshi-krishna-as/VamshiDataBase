@@ -16,7 +16,7 @@ public class BookShop
 	public static Connection con = null;
 	public static Statement stmt = null;
 	public static ResultSet resSet = null;
-	private static String url = "jdbc:mysql://localhost:3306/bookstore";
+	private static String url = "jdbc:mysql://localhost:3306/bookstore1";
 	private static String user = "root";
 	private static String pass = "Vamshi@1020";
 	
@@ -63,11 +63,11 @@ public class BookShop
 						String bGenre = sc2.nextLine();
 						System.out.println("Enter the Book Price : ");
 						double bPrice = sc1.nextDouble();
-						String getId = "select count(*) from book";
-						resSet = stmt.executeQuery(getId);
-						resSet.next();
-						int bId = resSet.getInt(1);
-						BookOperations.addBook(++bId,bName, aName, bGenre, bPrice);
+						//String getId = "select count(*) from book";
+						//resSet = stmt.executeQuery(getId);
+						//resSet.next();
+						//int bId = resSet.getInt(1);
+						BookOperations.addBook(bName, aName, bGenre, bPrice);
 						System.out.println();
 						break;
 					
@@ -81,27 +81,24 @@ public class BookShop
 						BookOperations.viewBooks();
 						break;
 					
-					/*case 4:
+					case 4:
 						System.out.println("Enter the Author name to retrieve the books : \n");
 						String s = sc1.next();
-						BookOperations.getBooksAccToAuthour(s);
+						BookOperations.getBookByAuthor(s);
 						break;
 					
 					case 5:
 						System.out.println("Enter the Genre to retrieve the books : \n");
 						String s1 = sc1.next();
-						BookOperations.getBooksAccToGenre(s1);
+						BookOperations.getBookByGenre(s1);
 						break;
 					
 					case 6:
-						for(Book ele : BookOperations.getBookList()) 
-						{
-							System.out.println("(*) "+ele.getBookName()+"\n");
-						}
-						System.out.println("Select the book to sell : ");
-						String str1 = sc1.next();
-						BookOperations.sellBook(str1);
-						break;*/
+						BookOperations.viewBooks();
+						System.out.println("Select the book id to sell : ");
+						int i = sc1.nextInt();
+						BookOperations.sellBook(i);
+						break;
 					
 					case 7:
 						System.exit(0);
