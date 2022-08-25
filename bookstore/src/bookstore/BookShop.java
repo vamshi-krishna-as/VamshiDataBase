@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Random;
 import java.util.Scanner;
@@ -12,10 +13,10 @@ import com.mysql.cj.protocol.Resultset;
 
 public class BookShop
 {
-
 	public static Connection con = null;
 	public static Statement stmt = null;
 	public static ResultSet resSet = null;
+	public 	static ResultSet res = null;
 	private static String url = "jdbc:mysql://localhost:3306/bookstore1";
 	private static String user = "root";
 	private static String pass = "Vamshi@1020";
@@ -23,11 +24,9 @@ public class BookShop
 	public static void main(String[] args) 
 	{
 		int ch = 0;
-		//Random rand = new Random();
 		Scanner sc1 = new Scanner(System.in);
 		Scanner sc2 = new Scanner(System.in);
 	
-		
 		try 
 		{
 			con = DriverManager.getConnection(url, user, pass);
@@ -63,10 +62,6 @@ public class BookShop
 						String bGenre = sc2.nextLine();
 						System.out.println("Enter the Book Price : ");
 						double bPrice = sc1.nextDouble();
-						//String getId = "select count(*) from book";
-						//resSet = stmt.executeQuery(getId);
-						//resSet.next();
-						//int bId = resSet.getInt(1);
 						BookOperations.addBook(bName, aName, bGenre, bPrice);
 						System.out.println();
 						break;
@@ -114,6 +109,30 @@ public class BookShop
 			e.printStackTrace();
 			System.out.println("");
 			main(args);
+		}
+		
+		finally
+		{
+			try 
+			{
+				if(stmt!=null)
+				{	
+					stmt.close();
+				}
+				if(con!=null)
+				{
+					con.close();
+				}
+				if(res!=null)
+				{
+					res.close();
+				}
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			
 		}
 	}
 }

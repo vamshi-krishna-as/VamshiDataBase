@@ -8,7 +8,6 @@ import com.mysql.cj.protocol.Resultset;
 
 public class BookOperations
 {
-	static ResultSet res = null;
 	public static void addBook(String bName, String aName, String bGenre, double bPrice) 
 	{
 		try
@@ -34,17 +33,17 @@ public class BookOperations
 		{
 			
 			String getTotalCount = "select count(*) from book1";
-			res = BookShop.stmt.executeQuery(getTotalCount);
-			res.next();
-			int Totalcount = res.getInt(1);
+			BookShop.res = BookShop.stmt.executeQuery(getTotalCount);
+			BookShop.res.next();
+			int Totalcount = BookShop.res.getInt(1);
 			System.out.println("total number of the books present in the store is : "+Totalcount);
 			System.out.println("");
 			
 			PreparedStatement myStmt = BookShop.con.prepareStatement("select count(*) from book1 where bookName = ?");
 			myStmt.setString(1, bName);
-			res = myStmt.executeQuery();
-			res.next();
-			int count = res.getInt(1);
+			BookShop.res = myStmt.executeQuery();
+			BookShop.res.next();
+			int count = BookShop.res.getInt(1);
 			System.out.println("total number of "+bName+" books present in the store are : "+count);
 			System.out.println();
 		} 
@@ -59,14 +58,23 @@ public class BookOperations
 		try
 		{
 			String getBooks = "select * from book1";
-			res = BookShop.stmt.executeQuery(getBooks);
-			while(res.next()) 
+			BookShop.res = BookShop.stmt.executeQuery(getBooks);
+			if(BookShop.res.next()  == true)
 			{
-				System.out.println("bookId : "+res.getString("bookId")+"\nbookName : "+res.getString("bookName")+"\nauthorkName : "+res.getString("authorName")+"\nbookGenre : "
-										+res.getString("bookGenre")+"\nbookPrice : "+res.getString("bookPrice"));
-				System.out.println("-------------------------------------------------");
+				do
+				{
+					System.out.println("bookId : " + BookShop.res.getString("bookId") + "\nbookName : "
+							+ BookShop.res.getString("bookName") + "\nauthorkName : "
+							+ BookShop.res.getString("authorName") + "\nbookGenre : "
+							+ BookShop.res.getString("bookGenre") + "\nbookPrice : "
+							+ BookShop.res.getString("bookPrice"));
+					System.out.println("-------------------------------------------------");
+				}while(BookShop.res.next()) ;
 			}
-			
+			else
+			{
+				System.out.println("Book Store is empty\n");
+			}
 		} 
 		catch (SQLException e) 
 		{
@@ -80,12 +88,23 @@ public class BookOperations
 		{
 			PreparedStatement stmt = BookShop.con.prepareStatement("select * from book1 where authorName = ?");
 			stmt.setString(1, aName);
-			res = stmt.executeQuery();
-			while(res.next())
+			BookShop.res = stmt.executeQuery();
+			if(BookShop.res.next() == true)
 			{
-				System.out.println("bookId : "+res.getString("bookId")+"\nbookName : "+res.getString("bookName")+"\nauthorkName : "+res.getString("authorName")+"\nbookGenre : "
-						+res.getString("bookGenre")+"\nbookPrice : "+res.getString("bookPrice"));
-				System.out.println("-------------------------------------------------");
+				do
+				{
+					System.out.println("bookId : " + BookShop.res.getString("bookId") + "\nbookName : "
+							+ BookShop.res.getString("bookName") + "\nauthorkName : "
+							+ BookShop.res.getString("authorName") + "\nbookGenre : "
+							+ BookShop.res.getString("bookGenre") + "\nbookPrice : "
+							+ BookShop.res.getString("bookPrice"));
+					System.out.println("-------------------------------------------------");
+				}while(BookShop.res.next());
+
+			}
+			else
+			{
+				System.out.println(aName+" books are not present in the book store\n");
 			}
 		} 
 		catch (SQLException e) 
@@ -100,12 +119,23 @@ public class BookOperations
 		{
 			PreparedStatement stmt = BookShop.con.prepareStatement("select * from book1 where bookGenre = ?");
 			stmt.setString(1, bGenre);
-			res = stmt.executeQuery();
-			while(res.next())
+			BookShop.res = stmt.executeQuery();
+			if(BookShop.res.next() == true)
 			{
-				System.out.println("bookId : "+res.getString("bookId")+"\nbookName : "+res.getString("bookName")+"\nauthorkName : "+res.getString("authorName")+"\nbookGenre : "
-						+res.getString("bookGenre")+"\nbookPrice : "+res.getString("bookPrice"));
-				System.out.println("-------------------------------------------------");
+				do
+				{
+					System.out.println("bookId : " + BookShop.res.getString("bookId") + "\nbookName : "
+							+ BookShop.res.getString("bookName") + "\nauthorkName : "
+							+ BookShop.res.getString("authorName") + "\nbookGenre : "
+							+ BookShop.res.getString("bookGenre") + "\nbookPrice : "
+							+ BookShop.res.getString("bookPrice"));
+					System.out.println("-------------------------------------------------");
+				}while(BookShop.res.next());
+
+			}
+			else 
+			{
+				System.out.println(bGenre+" books are not present in the store\n");
 			}
 		} 
 		catch (SQLException e) 
@@ -121,22 +151,21 @@ public class BookOperations
 			PreparedStatement stmt = BookShop.con.prepareStatement("delete from book1 where bookId = ?");
 			stmt.setInt(1, bId);
 			int rowsAffected = stmt.executeUpdate();
-					
-			System.out.println("Book has been sold successfully\ncurrent stock are : ");
+			
+			if(rowsAffected==1) 
+			{
+				System.out.println("Book has been sold successfully\ncurrent stock are : ");
+				viewBooks();
 
-			/*String q = "alter table book1 drop bookId";  
-			BookShop.stmt.executeUpdate(q);
-			
-			String q1 = "alter table book1 add bookId int not null auto_increment primary key first";  
-			BookShop.stmt.executeUpdate(q1);*/
-			viewBooks();
-			
-			
+			}
+			else
+			{
+				System.out.println("Id "+bId+" is not present in the book store\n");
+			}			
 		}
 		catch (Exception e) 
 		{
 			e.printStackTrace();
 		}
 	}
-
 }
